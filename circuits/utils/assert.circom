@@ -1,7 +1,7 @@
 pragma circom 2.2.2;
 
-include "../circomlib/circuits/comparators.circom";
-include "../circomlib/circuits/bitify.circom";
+include "comparators.circom";
+include "bitify.circom";
 
 // Assert the input number is less than 2^B 
 //

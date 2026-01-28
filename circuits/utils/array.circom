@@ -1,7 +1,7 @@
 
 pragma circom 2.2.2;
 
-include "../circomlib/circuits/comparators.circom";
+include "comparators.circom";
 include "./assert.circom";
 
 // Generates an array where the first `in` elements are 1 and the rest are 0
