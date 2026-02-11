@@ -18,6 +18,9 @@ async function main() {
     // Multiply base point
     const pubKey = babyJub.mulPointEscalar(babyJub.Base8, privKey);
 
+    console.log("use in circuit - Actual PKx BigInt:", babyJub.F.toObject(pubKey[0]).toString());
+    console.log("use in circuit - Actual PKy BigInt:", babyJub.F.toObject(pubKey[1]).toString());
+
     console.log("Private key:", privKey.toString());
     console.log("Public key X:", pubKey[0].toString());
     console.log("Public key Y:", pubKey[1].toString());
@@ -39,16 +42,23 @@ async function main() {
     // ---------------------------
     const S = babyJub.mulPointEscalar(pubKey, r);
 
+    // FIX: Convert the Field Elements to BigInt strings to match Circom logs
+    console.log("Shared Secret Sx (JS):", babyJub.F.toObject(S[0]).toString());
+    console.log("Shared Secret Sy (JS):", babyJub.F.toObject(S[1]).toString());
+
     // ---------------------------
     // 4️⃣ Poseidon hash to derive keystream
     // ---------------------------
-    // Convert S components to BigInt
-    const SxBigInt = bytesToBigInt(S[0]);
-    const SyBigInt = bytesToBigInt(S[1]);
-
-    // Compute keystream via Poseidon
+    const SxBigInt = babyJub.F.toObject(S[0]);
+    const SyBigInt = babyJub.F.toObject(S[1]);
     const poseidonOutputObj = poseidon([SxBigInt, SyBigInt]);
     const poseidonOutput = poseidon.F.toObject(poseidonOutputObj);
+    
+    console.log("Poseidon Output (JS):", poseidonOutput.toString());
+
+    // Add this to your JS to see the "Big Endian" version of your PK
+    console.log("PKx as BigInt (BE):", bytesToBigInt(pubKey[0]).toString());
+    console.log("PKy as BigInt (BE):", bytesToBigInt(pubKey[1]).toString());
 
     // Convert to 20-byte keystream
     let keystream = [];
@@ -72,8 +82,8 @@ async function main() {
     // ----------------------------------------
     const S2 = babyJub.mulPointEscalar(R, privKey);
 
-    const SxBig = bytesToBigInt(S2[0]);
-    const SyBig = bytesToBigInt(S2[1]);
+    const SxBig = S2[0];
+    const SyBig = S2[1];
 
     const poseidonOutObj2 = poseidon([SxBig, SyBig]);
     const poseidonOut2 = poseidon.F.toObject(poseidonOutObj2);
@@ -85,7 +95,7 @@ async function main() {
         tmp2 = tmp2 / 256n;
     }
 
-    const recovered = ciphertext.map((b, i) => b ^ keystream[i]);
+    const recovered = ciphertext.map((b, i) => b ^ keystream2[i]);
 
     console.log("Recovered:", recovered);
 

@@ -1,184 +1,114 @@
 pragma circom 2.0.0;
 
-// commands to run that file or debug:
-// 1. circom test2.circom --r1cs --wasm --sym -l ./node_modules/circomlib/circuits
-// 2. node test2_js/generate_witness.js test2_js/test2.wasm input.json witness.wtns
-// 3. snarkjs wtns export json witness.wtns witness.json
-// --> here the lines at the top reflect the output wires --> useful for debugging
-// 4. vim witness.json
-// more docs: https://docs.circom.io/getting-started/compiling-circuits/
-// more docs: https://docs.circom.io/getting-started/computing-the-witness/
+// // commands to run that file or debug:
+// // 1. circom test2.circom --r1cs --wasm --sym -l ./node_modules/circomlib/circuits
+// // 2. node test2_js/generate_witness.js test2_js/test2.wasm input.json witness.wtns
+// // 3. snarkjs wtns export json witness.wtns witness.json
+// // --> here the lines at the top reflect the output wires --> useful for debugging
+// // 4. vim witness.json
+// // more docs: https://docs.circom.io/getting-started/compiling-circuits/
+// // more docs: https://docs.circom.io/getting-started/computing-the-witness/
 
 include "babyjub.circom";
 include "poseidon.circom";
 include "bitify.circom";
-include "convert.circom";
-include "constants.circom";
 include "escalarmulany.circom";
 
-template BigEndianBytesToNum(n) {
-    signal input in[n];
-    signal output out;
+template PoseidonToKeystream() {
+    signal input in;
+    signal output out[20];
 
-    signal acc[n];
-    acc[0] <== in[0];
-    for (var i = 1; i < n; i++) {
-        acc[i] <== acc[i-1] * 256 + in[i];
+    component n2b = Num2Bits(256);
+    n2b.in <== in;
+
+    for (var i = 0; i < 20; i++) {
+        var byteVal = 0;
+        for (var j = 0; j < 8; j++) {
+            // Index i*8 starts from the Least Significant Bit
+            byteVal += n2b.out[i * 8 + j] * (1 << j);
+        }
+        // out[0] gets the 1st byte (LSB), out[19] gets the 20th byte
+        // To match your JS 'unshift' order:
+        out[19 - i] <== byteVal;
     }
-    out <== acc[n-1];
 }
 
 template BurnAddressEncryptFixed() {
-
     // Dummy inputs (unused but required)
-    signal input burnKey;
-    signal input revealAmount;
-    signal input burnExtraCommitment;
+    // signal input burnKey;
+    // signal input revealAmount;
+    // signal input burnExtraCommitment;
 
-    // ----------------------------------
-    // 1) Fixed ephemeral scalar r
-    // ----------------------------------
+    // 1) Scalar r
     var rVal = 123456711;
     component rBits = Num2Bits(253);
     rBits.in <== rVal;
 
-    // ----------------------------------
-    // 2) Base8 generator
-    // ----------------------------------
+    // 2) BabyJub Generator G
     signal G[2];
     G[0] <== 5299619240641551281634865583518297030282874472190772894086521144482721001553;
     G[1] <== 16950150798460657717958625567821834550301663161624707787222815936182638968203;
 
-    component R = EscalarMulAny(253);
-    for (var i = 0; i < 253; i++) {
-        R.e[i] <== rBits.out[i];
-    }
-    R.p[0] <== G[0];
-    R.p[1] <== G[1];
+    // Replace the 32-byte array and loop with this:
+    signal PKx;
+    signal PKy;
 
-    // Hard-coded ciphertext from JS
-    signal expectedCiphertext[20];
-    expectedCiphertext[0]  <== 20;
-    expectedCiphertext[1]  <== 221;
-    expectedCiphertext[2]  <== 153;
-    expectedCiphertext[3]  <== 251;
-    expectedCiphertext[4]  <== 240;
-    expectedCiphertext[5]  <== 242;
-    expectedCiphertext[6]  <== 151;
-    expectedCiphertext[7]  <== 191;
-    expectedCiphertext[8]  <== 40;
-    expectedCiphertext[9]  <== 205;
-    expectedCiphertext[10] <== 250;
-    expectedCiphertext[11] <== 169;
-    expectedCiphertext[12] <== 56;
-    expectedCiphertext[13] <== 162;
-    expectedCiphertext[14] <== 244;
-    expectedCiphertext[15] <== 88;
-    expectedCiphertext[16] <== 152;
-    expectedCiphertext[17] <== 227;
-    expectedCiphertext[18] <== 250;
-    expectedCiphertext[19] <== 211;
+    // Use the values from "Actual PKx BigInt" in your JS log
+    PKx <== 15919299401931535325513703139194931338293993994510664661086800834970360591752;
+    PKy <== 1645780246786685895560641778865228215443840970280597910012614014295481144366; // Get this from JS log
 
-
-    // ----------------------------------
-    // 3) Hard-coded public key bytes
-    // ----------------------------------
-    signal PKxBytes[32];
-    signal PKyBytes[32];
-
-    // (exactly as in your original circuit)
-    PKxBytes[0] <== 178; PKxBytes[1] <== 239; PKxBytes[2] <== 88;  PKxBytes[3] <== 41;
-    PKxBytes[4] <== 152; PKxBytes[5] <== 69;  PKxBytes[6] <== 27;  PKxBytes[7] <== 109;
-    PKxBytes[8] <== 254; PKxBytes[9] <== 94;  PKxBytes[10] <== 92; PKxBytes[11] <== 48;
-    PKxBytes[12] <== 0;  PKxBytes[13] <== 228; PKxBytes[14] <== 84; PKxBytes[15] <== 220;
-    PKxBytes[16] <== 72; PKxBytes[17] <== 39;  PKxBytes[18] <== 233; PKxBytes[19] <== 195;
-    PKxBytes[20] <== 252; PKxBytes[21] <== 201; PKxBytes[22] <== 43; PKxBytes[23] <== 161;
-    PKxBytes[24] <== 30; PKxBytes[25] <== 110; PKxBytes[26] <== 80; PKxBytes[27] <== 105;
-    PKxBytes[28] <== 10; PKxBytes[29] <== 86;  PKxBytes[30] <== 227; PKxBytes[31] <== 6;
-
-    PKyBytes[0] <== 101; PKyBytes[1] <== 87;  PKyBytes[2] <== 56;  PKyBytes[3] <== 113;
-    PKyBytes[4] <== 25;  PKyBytes[5] <== 218; PKyBytes[6] <== 212; PKyBytes[7] <== 223;
-    PKyBytes[8] <== 77;  PKyBytes[9] <== 24;  PKyBytes[10] <== 74; PKyBytes[11] <== 25;
-    PKyBytes[12] <== 143; PKyBytes[13] <== 31; PKyBytes[14] <== 74; PKyBytes[15] <== 82;
-    PKyBytes[16] <== 236; PKyBytes[17] <== 81; PKyBytes[18] <== 190; PKyBytes[19] <== 96;
-    PKyBytes[20] <== 233; PKyBytes[21] <== 21; PKyBytes[22] <== 192; PKyBytes[23] <== 148;
-    PKyBytes[24] <== 144; PKyBytes[25] <== 190; PKyBytes[26] <== 171; PKyBytes[27] <== 176;
-    PKyBytes[28] <== 15;  PKyBytes[29] <== 141; PKyBytes[30] <== 178; PKyBytes[31] <== 5;
-
-    component PKx = BigEndianBytesToNum(32);
-    component PKy = BigEndianBytesToNum(32);
-    for (var i = 0; i < 32; i++) {
-        PKx.in[i] <== PKxBytes[i];
-        PKy.in[i] <== PKyBytes[i];
-    }
-
-    // ----------------------------------
-    // 4) Shared secret S = r * PK
-    // ----------------------------------
+    // 4) S = r * PK
     component S = EscalarMulAny(253);
-    for (var i = 0; i < 253; i++) {
-        S.e[i] <== rBits.out[i];
-    }
-    S.p[0] <== PKx.out;
-    S.p[1] <== PKy.out;
+    for (var i = 0; i < 253; i++) { S.e[i] <== rBits.out[i]; }
+    S.p[0] <== PKx;
+    S.p[1] <== PKy;
 
-    // ----------------------------------
-    // 5) Poseidon(Sx, Sy)
-    // ----------------------------------
+    // 5) Poseidon & Keystream
     component pose = Poseidon(2);
     pose.inputs[0] <== S.out[0];
     pose.inputs[1] <== S.out[1];
 
-    component poseBytes = Num2BigEndianBytes(32);
-    poseBytes.in <== pose.out;
+    log("Sx:", S.out[0]);
+    log("Sy:", S.out[1]);
+    log("Poseidon:", pose.out);
 
-    signal keystream[20];
-    for (var i = 0; i < 20; i++) {
-        keystream[i] <== poseBytes.out[i];
-    }
+    component ks = PoseidonToKeystream();
+    ks.in <== pose.out;
 
-    // ----------------------------------
-    // 6) Burn address
-    // ----------------------------------
-    signal burnAddr[20];
-    for (var i = 0; i < 20; i++) {
-        burnAddr[i] <== i + 1;
-    }
+    // 6) XOR with Burn Address
+    signal output outCiphertext[20];
+    signal output expectedCiphertext[20];
 
-    // ----------------------------------
-    // 7) XOR
-    // ----------------------------------
     component aBits[20];
     component kBits[20];
-    signal xorbit[20][8];
+    signal xorBit[20][8];
     signal acc[20][8];
-    signal byteVal[20];
 
     for (var i = 0; i < 20; i++) {
         aBits[i] = Num2Bits(8);
         kBits[i] = Num2Bits(8);
 
-        aBits[i].in <== burnAddr[i];
-        kBits[i].in <== keystream[i];
+        aBits[i].in <== i + 1;
+        kBits[i].in <== ks.out[i];
 
         for (var b = 0; b < 8; b++) {
-            xorbit[i][b] <==
-                aBits[i].out[b] +
-                kBits[i].out[b] -
-                2 * aBits[i].out[b] * kBits[i].out[b];
+            // Assign to the pre-declared signal array
+            xorBit[i][b] <== aBits[i].out[b] + kBits[i].out[b] - 2 * aBits[i].out[b] * kBits[i].out[b];
+            
+            if (b == 0) {
+                acc[i][b] <== xorBit[i][b];
+            } else {
+                // Linear combination: acc + (constant * signal) is allowed!
+                acc[i][b] <== acc[i][b-1] + xorBit[i][b] * (1 << b);
+            }
         }
-
-        acc[i][0] <== xorbit[i][0];
-        for (var b = 1; b < 8; b++) {
-            acc[i][b] <== acc[i][b-1] + xorbit[i][b] * (1 << b);
-        }
-
-        byteVal[i] <== acc[i][7];
+        
+        outCiphertext[i] <== acc[i][7];
+        log("Byte ", i, " Ciphertext: ", outCiphertext[i]);
     }
 
-    // assertion
     for (var i = 0; i < 20; i++) {
-        byteVal[i] === expectedCiphertext[i];
+        outCiphertext[i] === expectedCiphertext[i];
     }
 }
 
