@@ -1,5 +1,14 @@
 pragma circom 2.0.0;
 
+// commands to run that file or debug:
+// 1. circom test2.circom --r1cs --wasm --sym -l ./node_modules/circomlib/circuits
+// 2. node test2_js/generate_witness.js test2_js/test2.wasm input.json witness.wtns
+// 3. snarkjs wtns export json witness.wtns witness.json
+// --> here the lines at the top reflect the output wires --> useful for debugging
+// 4. vim witness.json
+// more docs: https://docs.circom.io/getting-started/compiling-circuits/
+// more docs: https://docs.circom.io/getting-started/computing-the-witness/
+
 include "babyjub.circom";
 include "poseidon.circom";
 include "bitify.circom";
