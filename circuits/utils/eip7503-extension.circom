@@ -22,6 +22,8 @@ pragma circom 2.0.0;
 // 16. snarkjs generatecall
 // 17. copy paste output of previous command to remix ide next to verifyProof button and hit that button -> inspect true below
 
+// todo, integrate into proof-of-burn circuit -> run entire repo test with that to get metrics
+
 // debugging
 // X. snarkjs wtns export json witness.wtns witness.json
 // --> here the lines at the top reflect the output wires --> useful for debugging
