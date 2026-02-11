@@ -1,1 +1,6 @@
-{"burnKey": "12345", "revealAmount": "100", "burnExtraCommitment": "42"}
+
+{
+  "burnKey": 0,
+  "revealAmount": 0,
+  "burnExtraCommitment": 0
+}

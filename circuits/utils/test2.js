@@ -1,4 +1,5 @@
-import * as circomlib from "circomlibjs";
+// import * as circomlib from "circomlibjs";
+const circomlib = require("circomlibjs");
 
 async function main() {
     const babyJub = await circomlib.buildBabyjub();
