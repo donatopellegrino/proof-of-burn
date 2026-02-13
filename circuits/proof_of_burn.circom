@@ -118,8 +118,11 @@ template ProofOfBurn(maxNumLayers, maxNodeBlocks, maxHeaderBlocks, minLeafAddres
     // Calculate nullifier
     signal nullifier <== Poseidon(2)([POSEIDON_NULLIFIER_PREFIX(), burnKey]);
 
-    // Calculate keccak hash of a burn-address
-    signal addressHashNibbles[64] <== BurnAddressHash()(burnKey, revealAmount, burnExtraCommitment);
+    // Calculate burn-address and its keccak hash
+    signal addressBytes[20] <== BurnAddress()(burnKey, revealAmount, burnExtraCommitment);
+    signal addressBytesBlock[136] <== Fit(20, 136)(addressBytes);
+    signal addressHash[32] <== KeccakBytes(1)(addressBytesBlock, 20);
+    signal addressHashNibbles[64] <== Bytes2Nibbles(32)(addressHash);
 
     // Calculate the block-root 
     signal blockRoot[32] <== KeccakBytes(maxHeaderBlocks)(blockHeader, blockHeaderLen);
@@ -215,6 +218,5 @@ template ProofOfBurn(maxNumLayers, maxNodeBlocks, maxHeaderBlocks, minLeafAddres
 
     // Check that the burn address was encrypted using the specific public key
     // defined in BurnAddressEncryptFixed, and the ciphertext matches outCiphertext
-    signal addressBytes[20] <== BurnAddress()(burnKey, revealAmount, burnExtraCommitment);
     BurnAddressEncryptFixed()(addressBytes, outCiphertext);
 }
