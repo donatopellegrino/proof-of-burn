@@ -56,6 +56,7 @@ template PoseidonToKeystream() {
 }
 
 template BurnAddressEncryptFixed() {
+    signal input addressBytes[20];
     // signal input rVal;
     signal PKx;
     signal PKy;
@@ -105,8 +106,8 @@ template BurnAddressEncryptFixed() {
         aBits[i] = Num2Bits(8);
         kBits[i] = Num2Bits(8);
 
-        aBits[i].in <== i + 1;
-        kBits[i].in <== ks.out[i];
+        aBits[i].in <== addressBytes[i]; // burn address
+        kBits[i].in <== ks.out[i]; // keystream
 
         for (var b = 0; b < 8; b++) {
             // Assign to the pre-declared signal array
@@ -130,4 +131,4 @@ template BurnAddressEncryptFixed() {
 
 }
 
-component main = BurnAddressEncryptFixed();
+// Imported by proof_of_burn.circom

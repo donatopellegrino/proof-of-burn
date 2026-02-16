@@ -4,6 +4,7 @@ import rlp
 from hexbytes.main import HexBytes
 from .poseidon import poseidon4, Field, FIELD_SIZE
 from .constants import *
+from .testcases.burn_address import burn_addr_ciphertext
 
 MAX_HEADER_BYTES = 5 * 136
 MAX_LAYER_BYTES = 4 * 136
@@ -173,6 +174,7 @@ with io.open("circuits/main_proof_of_burn_cpp/input.json", "w") as f:
             "blockHeaderLen": header_bytes_len,
             "byteSecurityRelax": 0,
             "_proofExtraCommitment": 0,
+            "outCiphertext": burn_addr_ciphertext(burn_key, spend, burn_extra_commit),
         },
         f,
     )

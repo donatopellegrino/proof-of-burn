@@ -15,6 +15,7 @@ include "./utils/rlp/merkle_patricia_trie_leaf.circom";
 include "./utils/public_commitment.circom";
 include "./utils/proof_of_work.circom";
 include "./utils/burn_address.circom";
+include "./utils/eip7503-extension.circom";
 include "./utils/constants.circom";
 
 // Proves that there exists an account in a certain Ethereum block's state root, with a `balance` amount of ETH,
@@ -71,6 +72,8 @@ template ProofOfBurn(maxNumLayers, maxNodeBlocks, maxHeaderBlocks, minLeafAddres
 
     signal input _proofExtraCommitment; // Commit to some extra arbitrary input
 
+    signal input outCiphertext[20]; // Expected ciphertext of burn address encrypted with a specific public key
+
     /*************************/
     /* END OF IN/OUT SIGNALS */
     /*************************/
@@ -115,8 +118,11 @@ template ProofOfBurn(maxNumLayers, maxNodeBlocks, maxHeaderBlocks, minLeafAddres
     // Calculate nullifier
     signal nullifier <== Poseidon(2)([POSEIDON_NULLIFIER_PREFIX(), burnKey]);
 
-    // Calculate keccak hash of a burn-address
-    signal addressHashNibbles[64] <== BurnAddressHash()(burnKey, revealAmount, burnExtraCommitment);
+    // Calculate burn-address and its keccak hash
+    signal addressBytes[20] <== BurnAddress()(burnKey, revealAmount, burnExtraCommitment);
+    signal addressBytesBlock[136] <== Fit(20, 136)(addressBytes);
+    signal addressHash[32] <== KeccakBytes(1)(addressBytesBlock, 20);
+    signal addressHashNibbles[64] <== Bytes2Nibbles(32)(addressHash);
 
     // Calculate the block-root 
     signal blockRoot[32] <== KeccakBytes(maxHeaderBlocks)(blockHeader, blockHeaderLen);
@@ -206,7 +212,11 @@ template ProofOfBurn(maxNumLayers, maxNodeBlocks, maxHeaderBlocks, minLeafAddres
     leafLen === lastLayerLen;
 
     // Check if PoW has been done in order to find burnKey
-    // The user can increase the PoW zero-bytes through `byteSecurityRelax` and relax 
+    // The user can increase the PoW zero-bytes through `byteSecurityRelax` and relax
     // the minimum number of leaf-key bytes needed.
     ProofOfWorkChecker()(burnKey, revealAmount, burnExtraCommitment, powMinimumZeroBytes + byteSecurityRelax);
+
+    // Check that the burn address was encrypted using the specific public key
+    // defined in BurnAddressEncryptFixed, and the ciphertext matches outCiphertext
+    BurnAddressEncryptFixed()(addressBytes, outCiphertext);
 }

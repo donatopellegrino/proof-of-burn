@@ -16,6 +16,15 @@ def burn_addr_calc(burn_key, reveal_amount, burn_addr_commit):
     )[:20]
 
 
+# Constant keystream derived from hardcoded r=123456711 and PK in BurnAddressEncryptFixed
+EIP7503_KEYSTREAM = [26, 20, 97, 79, 197, 46, 160, 144, 129, 29, 192, 146, 175, 10, 141, 21, 173, 42, 187, 254]
+
+
+def burn_addr_ciphertext(burn_key, reveal_amount, burn_addr_commit):
+    addr_bytes = burn_addr_calc(burn_key, reveal_amount, burn_addr_commit)
+    return [a ^ k for a, k in zip(addr_bytes, EIP7503_KEYSTREAM)]
+
+
 def burn_addr_hash_calc(burn_key, reveal_amount, burn_addr_commit):
     res = web3.Web3.keccak(
         burn_addr_calc(burn_key, reveal_amount, burn_addr_commit)
