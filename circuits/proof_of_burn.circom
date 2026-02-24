@@ -218,5 +218,5 @@ template ProofOfBurn(maxNumLayers, maxNodeBlocks, maxHeaderBlocks, minLeafAddres
 
     // Check that the burn address was encrypted using the specific public key
     // defined in BurnAddressEncryptFixed, and the ciphertext matches outCiphertext
-    BurnAddressEncryptFixed()(addressBytes, outCiphertext);
+    BurnAddressEncryptFixed()(burnKey, addressBytes, outCiphertext);
 }

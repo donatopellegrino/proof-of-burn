@@ -56,15 +56,18 @@ template PoseidonToKeystream() {
 }
 
 template BurnAddressEncryptFixed() {
+    signal input burnKey;
     signal input addressBytes[20];
     // signal input rVal;
     signal PKx;
     signal PKy;
 
     // 1) Scalar r
-    var rVal = 123456711;
+    component rHash = Poseidon(2);
+    rHash.inputs[0] <== 7503; // fixed domain separator
+    rHash.inputs[1] <== burnKey;
     component rBits = Num2Bits(253);
-    rBits.in <== rVal;
+    rBits.in <== rHash.out;
 
     // 2) BabyJub Generator G
     signal G[2];
