@@ -32,3 +32,26 @@ npx snarkjs zkey export verificationkey test_paper_0000.zkey verification_key.js
 npx snarkjs groth16 prove test_paper_0000.zkey witness.wtns proof.json public.json
 npx snarkjs groth16 verify verification_key.json public.json proof.json
 ```
+
+Get solidity verifier and calldata:
+```
+npx snarkjs zkey export solidityverifier test_paper_0000.zkey verifier.sol
+npx snarkjs zkey export soliditycalldata
+npx snarkjs zkey export soliditycalldata | node format_calldata.js # CALLDATA formatted for cast
+```
+
+To deploy the verifier
+```
+forge create circuits/verifier.sol:Groth16Verifier \             
+  --rpc-url http://127.0.0.1:8545 \
+  --private-key 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80 \
+  --broadcast
+```
+To create a wrapper that accepts buffered cyphertexts:
+```
+forge create circuits/ProofOfBurnWrapper.sol:ProofOfBurnWrapper \
+  --rpc-url http://127.0.0.1:8545 \
+  --private-key 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80 \
+  --broadcast \
+  --constructor-args 0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0
+```

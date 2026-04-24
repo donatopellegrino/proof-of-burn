@@ -32,7 +32,7 @@ include "./utils/constants.circom";
 //   5. A `burnExtraCommitment`: commits to the way the revealed amount should be distributed by the contract. (E.g the amounts of prover and broadcaster fees)
 //   6. A `_proofExtraCommitment`: to glue information to the proof that aren't necessarily processed in the circuit. (E.g prover address)
 //
-template ProofOfBurn(maxNumLayers, maxNodeBlocks, maxHeaderBlocks, minLeafAddressNibbles, amountBytes, powMinimumZeroBytes, maxIntendedBalance, maxActualBalance) {
+template ProofOfBurn(maxNumLayers, maxNodeBlocks, maxHeaderBlocks, minLeafAddressNibbles, amountBytes, powMinimumZeroBytes, maxIntendedBalance, maxActualBalance, numAdmins) {
 
     /***************************/
     /* START OF IN/OUT SIGNALS */
@@ -72,7 +72,7 @@ template ProofOfBurn(maxNumLayers, maxNodeBlocks, maxHeaderBlocks, minLeafAddres
 
     signal input _proofExtraCommitment; // Commit to some extra arbitrary input
 
-    signal output outCiphertext[10]; // Packed ciphertexts of burn address (20 bytes each), one per admin viewing key
+    signal output outCiphertext[numAdmins]; // Packed ciphertexts of burn address (20 bytes each), one per admin viewing key
 
     /*************************/
     /* END OF IN/OUT SIGNALS */
@@ -217,5 +217,5 @@ template ProofOfBurn(maxNumLayers, maxNodeBlocks, maxHeaderBlocks, minLeafAddres
     ProofOfWorkChecker()(burnKey, revealAmount, burnExtraCommitment, powMinimumZeroBytes + byteSecurityRelax);
 
     // Compute encrypted burn address for each admin and expose as public outputs
-    outCiphertext <== BurnAddressEncryptFixed()(burnKey, addressBytes);
+    outCiphertext <== BurnAddressEncryptFixed(numAdmins)(burnKey, addressBytes);
 }

@@ -35,6 +35,7 @@ include "babyjub.circom";
 include "poseidon.circom";
 include "bitify.circom";
 include "escalarmulany.circom";
+include "./admin_keys.circom";
 
 template PoseidonToKeystream() {
     signal input in;
@@ -55,36 +56,13 @@ template PoseidonToKeystream() {
     }
 }
 
-template BurnAddressEncryptFixed() {
+// numAdmins: compile-time parameter — use the first numAdmins keys from AdminKeys (max 100)
+template BurnAddressEncryptFixed(numAdmins) {
     signal input burnKey;
     signal input addressBytes[20];
-    signal output outCiphertext[10];
+    signal output outCiphertext[numAdmins];
 
-    var NUM_ADMINS = 10;
-
-    // Hardcoded admin public keys (derived from private keys 123456789, 1..9)
-    var PKX[10];
-    var PKY[10];
-    PKX[0] = 15919299401931535325513703139194931338293993994510664661086800834970360591752;
-    PKY[0] = 1645780246786685895560641778865228215443840970280597910012614014295481144366;
-    PKX[1] = 5299619240641551281634865583518297030282874472190772894086521144482721001553;
-    PKY[1] = 16950150798460657717958625567821834550301663161624707787222815936182638968203;
-    PKX[2] = 10031262171927540148667355526369034398030886437092045105752248699557385197826;
-    PKY[2] = 633281375905621697187330766174974863687049529291089048651929454608812697683;
-    PKX[3] = 2763488322167937039616325905516046217694264098671987087929565332380420898366;
-    PKY[3] = 15305195750036305661220525648961313310481046260814497672243197092298550508693;
-    PKX[4] = 12252886604826192316928789929706397349846234911198931249025449955069330867144;
-    PKY[4] = 1286140751908834028607023759717162073146610688084909004843365841635476459484;
-    PKX[5] = 11480966271046430430613841218147196773252373073876138147006741179837832100836;
-    PKY[5] = 15148236048131954717802795400425086368006776860859772698778589175317365693546;
-    PKX[6] = 10483991165196995731760716870725509190315033255344071753161464961897900552628;
-    PKY[6] = 16822899191463256771813724222715007505997804748105685077895991386716774358231;
-    PKX[7] = 20092560661213339045022877747484245238324772779820628739268223482659246842641;
-    PKY[7] = 12112450042127193446189577552007703839818242727902437791835414514847797088033;
-    PKX[8] = 7582035475627193640797276505418002166691739036475590846121162698650004832581;
-    PKY[8] = 7801528930831391612913542953849263092120765287178679640990215688947513841260;
-    PKX[9] = 4705897243203718691035604313913899717760209962238015362153877735592901317263;
-    PKY[9] = 11533909001000295577818857040682494493436124051895563619976413559559984357704;
+    component ak = AdminKeys();
 
     // 1) Scalar r (shared across all admins)
     component rHash = Poseidon(2);
@@ -101,20 +79,20 @@ template BurnAddressEncryptFixed() {
     }
 
     // 3) Per-admin: compute shared secret, keystream, XOR, and pack into output
-    component S[10];
-    component pose[10];
-    component ks[10];
-    component kBits[10][20];
-    signal xorBit[10][20][8];
-    signal acc[10][20][8];
-    signal byteVal[10][20];
-    signal packAcc[10][21];
+    component S[numAdmins];
+    component pose[numAdmins];
+    component ks[numAdmins];
+    component kBits[numAdmins][20];
+    signal xorBit[numAdmins][20][8];
+    signal acc[numAdmins][20][8];
+    signal byteVal[numAdmins][20];
+    signal packAcc[numAdmins][21];
 
-    for (var k = 0; k < NUM_ADMINS; k++) {
+    for (var k = 0; k < numAdmins; k++) {
         S[k] = EscalarMulAny(253);
         for (var i = 0; i < 253; i++) { S[k].e[i] <== rBits.out[i]; }
-        S[k].p[0] <== PKX[k];
-        S[k].p[1] <== PKY[k];
+        S[k].p[0] <== ak.PKX[k];
+        S[k].p[1] <== ak.PKY[k];
 
         pose[k] = Poseidon(2);
         pose[k].inputs[0] <== S[k].out[0];

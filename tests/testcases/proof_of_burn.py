@@ -50,7 +50,7 @@ proof_of_burn_corrupted_layer_3 = copy.deepcopy(proof_of_burn_inp)
 proof_of_burn_corrupted_layer_3["layers"][3][0] += 1
 
 test_proof_of_burn = (
-    "ProofOfBurn(4, 4, 5, 20, 31, 2, 10 ** 18, 10 ** 19)",
+    "ProofOfBurn(4, 4, 5, 20, 31, 2, 10 ** 18, 10 ** 19, 10)",
     [
         (
             proof_of_burn_inp,
