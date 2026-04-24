@@ -27,8 +27,8 @@ Groth16 setup, prove, and verify:
 
 ```bash
 wget -c https://storage.googleapis.com/zkevm/ptau/powersOfTau28_hez_final_24.ptau
-snarkjs groth16 setup test_paper.r1cs powersOfTau28_hez_final_24.ptau test_paper_0000.zkey
-snarkjs zkey export verificationkey test_paper_0000.zkey verification_key.json
-snarkjs groth16 prove test_paper_0000.zkey witness.wtns proof.json public.json
-snarkjs groth16 verify verification_key.json public.json proof.json
+NODE_OPTIONS="--max-old-space-size=30720" npx snarkjs groth16 setup test_paper.r1cs powersOfTau28_hez_final_24.ptau test_paper_0000.zkey
+npx snarkjs zkey export verificationkey test_paper_0000.zkey verification_key.json
+npx snarkjs groth16 prove test_paper_0000.zkey witness.wtns proof.json public.json
+npx snarkjs groth16 verify verification_key.json public.json proof.json
 ```
