@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Wraps "npx snarkjs zkey export soliditycalldata" and formats output for:
 //   1. ProofOfBurnWrapper  — "verify(uint256[2],uint256[2][2],uint256[2],uint256,bytes)"
-//   2. Groth16Verifier     — "verifyProof(uint[2],uint[2][2],uint[2],uint[101])"
+//   2. Groth16Verifier     — "verifyProof(uint[2],uint[2][2],uint[2],uint[N])" where N = pubSignals.length
 //
 // Usage (pipe):
 //   npx snarkjs zkey export soliditycalldata test_paper_0000.zkey witness.wtns | node format_calldata.js
@@ -46,7 +46,7 @@ function format(raw) {
     console.log('\n# Groth16Verifier');
     console.log(
         `cast send <VERIFIER_ADDRESS>` +
-        ` "verifyProof(uint[2],uint[2][2],uint[2],uint[101])"` +
+        ` "verifyProof(uint[2],uint[2][2],uint[2],uint[${pubSignals.length}])"` +
         ` '${castArray(pA)}'` +
         ` '${castArray(pB)}'` +
         ` '${castArray(pC)}'` +
