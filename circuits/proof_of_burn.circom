@@ -72,7 +72,7 @@ template ProofOfBurn(maxNumLayers, maxNodeBlocks, maxHeaderBlocks, minLeafAddres
 
     signal input _proofExtraCommitment; // Commit to some extra arbitrary input
 
-    signal input outCiphertext[20]; // Expected ciphertext of burn address encrypted with a specific public key
+    signal input outCiphertext[10][20]; // Expected ciphertexts of burn address, one per admin viewing key
 
     /*************************/
     /* END OF IN/OUT SIGNALS */
