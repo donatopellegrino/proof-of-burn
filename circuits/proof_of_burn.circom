@@ -72,7 +72,7 @@ template ProofOfBurn(maxNumLayers, maxNodeBlocks, maxHeaderBlocks, minLeafAddres
 
     signal input _proofExtraCommitment; // Commit to some extra arbitrary input
 
-    signal input outCiphertext[10][20]; // Expected ciphertexts of burn address, one per admin viewing key
+    signal output outCiphertext[10]; // Packed ciphertexts of burn address (20 bytes each), one per admin viewing key
 
     /*************************/
     /* END OF IN/OUT SIGNALS */
@@ -216,7 +216,6 @@ template ProofOfBurn(maxNumLayers, maxNodeBlocks, maxHeaderBlocks, minLeafAddres
     // the minimum number of leaf-key bytes needed.
     ProofOfWorkChecker()(burnKey, revealAmount, burnExtraCommitment, powMinimumZeroBytes + byteSecurityRelax);
 
-    // Check that the burn address was encrypted using the specific public key
-    // defined in BurnAddressEncryptFixed, and the ciphertext matches outCiphertext
-    BurnAddressEncryptFixed()(burnKey, addressBytes, outCiphertext);
+    // Compute encrypted burn address for each admin and expose as public outputs
+    outCiphertext <== BurnAddressEncryptFixed()(burnKey, addressBytes);
 }

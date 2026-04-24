@@ -58,7 +58,7 @@ template PoseidonToKeystream() {
 template BurnAddressEncryptFixed() {
     signal input burnKey;
     signal input addressBytes[20];
-    signal input outCiphertext[10][20];
+    signal output outCiphertext[10];
 
     var NUM_ADMINS = 10;
 
@@ -100,7 +100,7 @@ template BurnAddressEncryptFixed() {
         aBits[i].in <== addressBytes[i];
     }
 
-    // 3) Per-admin: compute shared secret, keystream, XOR, and assert ciphertext
+    // 3) Per-admin: compute shared secret, keystream, XOR, and pack into output
     component S[10];
     component pose[10];
     component ks[10];
@@ -108,6 +108,7 @@ template BurnAddressEncryptFixed() {
     signal xorBit[10][20][8];
     signal acc[10][20][8];
     signal byteVal[10][20];
+    signal packAcc[10][21];
 
     for (var k = 0; k < NUM_ADMINS; k++) {
         S[k] = EscalarMulAny(253);
@@ -138,9 +139,12 @@ template BurnAddressEncryptFixed() {
             byteVal[k][i] <== acc[k][i][7];
         }
 
+        // Pack 20 bytes big-endian into a single field element
+        packAcc[k][0] <== 0;
         for (var i = 0; i < 20; i++) {
-            byteVal[k][i] === outCiphertext[k][i];
+            packAcc[k][i+1] <== packAcc[k][i] * 256 + byteVal[k][i];
         }
+        outCiphertext[k] <== packAcc[k][20];
     }
 
 }

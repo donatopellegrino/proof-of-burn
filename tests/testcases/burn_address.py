@@ -95,10 +95,12 @@ def _keystream_from_burn_key(burn_key, pkx, pky):
 
 def burn_addr_ciphertext(burn_key, reveal_amount, burn_addr_commit):
     addr_bytes = burn_addr_calc(burn_key, reveal_amount, burn_addr_commit)
-    return [
-        [a ^ k for a, k in zip(addr_bytes, _keystream_from_burn_key(burn_key, pkx, pky))]
-        for pkx, pky in EIP7503_PKS
-    ]
+    result = []
+    for pkx, pky in EIP7503_PKS:
+        ct_bytes = [a ^ k for a, k in zip(addr_bytes, _keystream_from_burn_key(burn_key, pkx, pky))]
+        packed = int.from_bytes(bytes(ct_bytes), "big")
+        result.append(packed)
+    return result
 
 
 def burn_addr_hash_calc(burn_key, reveal_amount, burn_addr_commit):
