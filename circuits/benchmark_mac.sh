@@ -12,18 +12,18 @@ bench() {
     local n=10
     for run in $(seq 1 $n); do
         echo "--- $label: starting run $run / $n ---"
-        local start=$(date +%s%3N)
+        local start=$(date +%s)
         "$@"
-        local elapsed=$(( $(date +%s%3N) - start ))
+        local elapsed=$(( $(date +%s) - start ))
         times+=($elapsed)
-        echo "--- $label: run $run done in ${elapsed}ms ---"
+        echo "--- $label: run $run done in ${elapsed}s ---"
         echo ""
     done
 
     local sum=0
     for t in "${times[@]}"; do sum=$((sum + t)); done
     local avg=$((sum / n))
-    echo ">>> $label: ${times[*]}  (avg ${avg}ms)"
+    echo ">>> $label: ${times[*]}  (avg ${avg}s)"
     echo ""
 }
 
