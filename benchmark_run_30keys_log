@@ -1,0 +1,149 @@
+./benchmark.sh 
+
+up to date, audited 36 packages in 1s
+
+1 package is looking for funding
+  run `npm fund` for details
+
+3 high severity vulnerabilities
+
+To address all issues, run:
+  npm audit fix
+
+Run `npm audit` for details.
+** Resuming transfer from byte position 19327435928
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100   174  100   174    0     0    588      0 --:--:-- --:--:-- --:--:--   589
+template instances: 515
+non-linear constraints: 4260968
+linear constraints: 2277090
+public inputs: 0
+private inputs: 2870
+public outputs: 31
+wires: 6518003
+labels: 64640253
+Written successfully: ./test_paper.r1cs
+Written successfully: ./test_paper.sym
+Written successfully: ./test_paper_js/test_paper.wasm
+Everything went okay
+[INFO]  snarkJS: Reading r1cs
+[INFO]  snarkJS: Reading tauG1
+[INFO]  snarkJS: Reading tauG2
+[INFO]  snarkJS: Reading alphatauG1
+[INFO]  snarkJS: Reading betatauG1
+[INFO]  snarkJS: Circuit hash: 
+                a3bd72cf 38f90779 f6114cc1 1382065e
+                f80d8063 6a4a50d7 c4f28fc5 81db13b2
+                b83e5a63 a2ff8ace c364b2ec 18c3e39d
+                4b05e9c6 ae2cbed3 68325f3e dc13318f
+[INFO]  snarkJS: EXPORT VERIFICATION KEY STARTED
+[INFO]  snarkJS: > Detected protocol: groth16
+[INFO]  snarkJS: EXPORT VERIFICATION KEY FINISHED
+--- groth16 prove: starting run 1 / 10 ---
+--- groth16 prove: run 1 done in 56147ms ---
+
+--- groth16 prove: starting run 2 / 10 ---
+--- groth16 prove: run 2 done in 56419ms ---
+
+--- groth16 prove: starting run 3 / 10 ---
+--- groth16 prove: run 3 done in 55807ms ---
+
+--- groth16 prove: starting run 4 / 10 ---
+--- groth16 prove: run 4 done in 56343ms ---
+
+--- groth16 prove: starting run 5 / 10 ---
+--- groth16 prove: run 5 done in 56287ms ---
+
+--- groth16 prove: starting run 6 / 10 ---
+--- groth16 prove: run 6 done in 56213ms ---
+
+--- groth16 prove: starting run 7 / 10 ---
+--- groth16 prove: run 7 done in 57359ms ---
+
+--- groth16 prove: starting run 8 / 10 ---
+--- groth16 prove: run 8 done in 56332ms ---
+
+--- groth16 prove: starting run 9 / 10 ---
+--- groth16 prove: run 9 done in 56056ms ---
+
+--- groth16 prove: starting run 10 / 10 ---
+--- groth16 prove: run 10 done in 56766ms ---
+
+>>> groth16 prove: 56147 56419 55807 56343 56287 56213 57359 56332 56056 56766  (avg 56372ms)
+
+--- groth16 verify: starting run 1 / 10 ---
+[INFO]  snarkJS: OK!
+--- groth16 verify: run 1 done in 402ms ---
+
+--- groth16 verify: starting run 2 / 10 ---
+[INFO]  snarkJS: OK!
+--- groth16 verify: run 2 done in 448ms ---
+
+--- groth16 verify: starting run 3 / 10 ---
+[INFO]  snarkJS: OK!
+--- groth16 verify: run 3 done in 403ms ---
+
+--- groth16 verify: starting run 4 / 10 ---
+[INFO]  snarkJS: OK!
+--- groth16 verify: run 4 done in 412ms ---
+
+--- groth16 verify: starting run 5 / 10 ---
+[INFO]  snarkJS: OK!
+--- groth16 verify: run 5 done in 394ms ---
+
+--- groth16 verify: starting run 6 / 10 ---
+[INFO]  snarkJS: OK!
+--- groth16 verify: run 6 done in 438ms ---
+
+--- groth16 verify: starting run 7 / 10 ---
+[INFO]  snarkJS: OK!
+--- groth16 verify: run 7 done in 406ms ---
+
+--- groth16 verify: starting run 8 / 10 ---
+[INFO]  snarkJS: OK!
+--- groth16 verify: run 8 done in 414ms ---
+
+--- groth16 verify: starting run 9 / 10 ---
+[INFO]  snarkJS: OK!
+--- groth16 verify: run 9 done in 402ms ---
+
+--- groth16 verify: starting run 10 / 10 ---
+[INFO]  snarkJS: OK!
+--- groth16 verify: run 10 done in 402ms ---
+
+>>> groth16 verify: 402 448 403 412 394 438 406 414 402 402  (avg 412ms)
+
+
+
+
+
+
+
+cast send 0x0165878A594ca255338adfa4d48449f69242Eb8F "verifyProof(uint[2],uint[2][2],uint[2],uint[31])" '[0x16a615a8140185a160f3af2ce9fc9831f92bd0a5940c787c754eb51b2376f089,0x129c394fb0c9c4ec9fe138cc835d458555a2c8574d8836e0a853e474fc17cd39]' '[[0x01b1dafa881a9541e5d89282326c7a32fa740c7dcff04b9d5ebc3a5d521b9d37,0x02ecb3b42ec07e4a904b6ef249765961bb8dfdd6
+a0c08599878466f438e5730f],[0x135c94e1aea4c09670cb5599b9280c676f80b15bb58769c8a6856d7aa9a1e1c4,0x1c8784f3d71f47f47aca2948a78fc6bb9f1a09b441b2014d4b803bf7d036f552]]' '[0x2d9283dd3df9171612fc7ef400962528f7da5eeaa6ab003c24f06c04d4d5838c,0x0cf9726b1bdd1a0b4778f4264c0c9a4422884751adef5be20657ea131961c53b]' '[0x00cc45c31f48396581dbab61f1af803ca67900dc60a2c589aa
+c47c30a6f472d0,0x00000000000000000000000078d6fcb3d898112b94f38188e69cbf34b195044c,0x0000000000000000000000005988f6e0fb886d40585813586e952d8eb703b460,0x000000000000000000000000315d738677602439c63208a687295f8d5a8858cb,0x0000000000000000000000009bb8ba22f317990d51b381c6cb3d6b65b38c86fc,0x00000000000000000000000062493f7f200abe04c3646c53d7a6d06188a8b622,0x0000
+00000000000000000000c11790eeea8c8c1b218639e4d975196dde97c34b,0x000000000000000000000000b08812db49be1fde2ea7169b696af179c1b9ccd6,0x000000000000000000000000bda58a0684074855058d2efaccb41ac660c5cbd3,0x0000000000000000000000000989b79f46587f63180ed73f0a25ce1a71a53abc,0x00000000000000000000000061e794b4bac140d4a536bac7b69d5cfff1944165,0x0000000000000000000000006
+f09db5625dddf1aa9738168774ad111610fa22f,0x000000000000000000000000f60cc531985d66d6dd8161db4b892a9125b13f7a,0x000000000000000000000000d22f864be39fda54305fd870c00b83e70d84e4cc,0x0000000000000000000000006469d2c3ebff8e74237c131667d3337e3d39b593,0x000000000000000000000000dfa9f71697d7d98a29552de4fed4e804c67e2b7f,0x000000000000000000000000227b339d04b18cb60bebbe
+2ead2d369aff81ff76,0x000000000000000000000000c17793fcac9f49359c6fff79dc2417b63da3aab8,0x00000000000000000000000011720f66007dfea69021601080f3e7d94068ae91,0x000000000000000000000000d01da472a01fef804a8be5bdbc2558d55b8dc2f8,0x000000000000000000000000bbc6d1074dec8281c9c4c1b291344d68a41c65dd,0x0000000000000000000000008f82683b47fbe3317f06be4a92a25b4c44268862,0x
+000000000000000000000000e4edac08f02e68ab1a2e41cff9a663b5508ac1ab,0x000000000000000000000000ead5c6c7389bd837ab2e6177515cc8a5974295bd,0x0000000000000000000000003ffd1411e28dd985799008a4518b289dbcbf1330,0x00000000000000000000000045457a2c9665293c4ee19d37035da8ada2468564,0x0000000000000000000000000fa72386edf9e6329ea200be72a197f37dc3a607,0x000000000000000000000
+0007d97057631f68218f25dfc24f9262b7cc855b000,0x00000000000000000000000011d0b5200e12fe6d7467f88056c865362d972747,0x0000000000000000000000008f5f148de4f7723646c4ddca03ae1d7a20557cd8,0x000000000000000000000000782c281b5c8e6ebcbba31451600fac14e3c0db9d]' --rpc-url http://127.0.0.1:8545 --private-key 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2f
+f80
+
+blockHash            0x6ab4a5a32a01f6b83b7c137babb3a7c1392b84baff16cfc86d179dd5fae04f51
+blockNumber          8
+contractAddress      
+cumulativeGasUsed    60070
+effectiveGasPrice    404090141
+from                 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+gasUsed              60070
+logs                 []
+logsBloom            0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+root                 
+status               1 (success)
+transactionHash      0x367fc519fd6e3e5f35d9d1f29d7266b6007da243c339fed97a30e8f4a7b79782
+transactionIndex     0
+type                 2
+blobGasPrice         1
+blobGasUsed          
+to                   0x0165878A594ca255338adfa4d48449f69242Eb8F

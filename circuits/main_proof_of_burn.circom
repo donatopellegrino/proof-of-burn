@@ -24,4 +24,4 @@ include "./proof_of_burn.circom";
 //
 // 100 ETH -> maxActualBalance (Allows the burn address to be dusted by attackers up to a limited amount, while still keeping the burn address balance appearing realistic)
 //
-component main = ProofOfBurn(16, 4, 8, 50, 31, 2, 10 ** 19, 10 ** 20);
+component main = ProofOfBurn(16, 4, 8, 50, 31, 2, 10 ** 19, 10 ** 20, 10);

@@ -16,4 +16,4 @@ pragma circom 2.2.2;
         include "proof_of_burn.circom";
         include "spend.circom";
 
-component main = ProofOfBurn(4, 4, 5, 20, 31, 2, 10 ** 18, 10 ** 19);
+component main = ProofOfBurn(4, 4, 5, 20, 31, 2, 10 ** 18, 10 ** 19, 100);

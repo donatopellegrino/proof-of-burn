@@ -35,6 +35,7 @@ include "babyjub.circom";
 include "poseidon.circom";
 include "bitify.circom";
 include "escalarmulany.circom";
+include "./admin_keys.circom";
 
 template PoseidonToKeystream() {
     signal input in;
@@ -55,81 +56,73 @@ template PoseidonToKeystream() {
     }
 }
 
-template BurnAddressEncryptFixed() {
+// numAdmins: compile-time parameter — use the first numAdmins keys from AdminKeys (max 100)
+template BurnAddressEncryptFixed(numAdmins) {
     signal input burnKey;
     signal input addressBytes[20];
-    // signal input rVal;
-    signal PKx;
-    signal PKy;
+    signal output outCiphertext[numAdmins];
 
-    // 1) Scalar r
+    component ak = AdminKeys();
+
+    // 1) Scalar r (shared across all admins)
     component rHash = Poseidon(2);
-    rHash.inputs[0] <== 7503; // fixed domain separator
+    rHash.inputs[0] <== 7503;
     rHash.inputs[1] <== burnKey;
     component rBits = Num2Bits(253);
     rBits.in <== rHash.out;
 
-    // 2) BabyJub Generator G
-    signal G[2];
-    G[0] <== 5299619240641551281634865583518297030282874472190772894086521144482721001553;
-    G[1] <== 16950150798460657717958625567821834550301663161624707787222815936182638968203;
-
-    // Use the values from "Actual PKx BigInt" in your JS log
-    PKx <== 15919299401931535325513703139194931338293993994510664661086800834970360591752;
-    PKy <== 1645780246786685895560641778865228215443840970280597910012614014295481144366; // Get this from JS log
-
-    // 4) S = r * PK
-    component S = EscalarMulAny(253);
-    for (var i = 0; i < 253; i++) { S.e[i] <== rBits.out[i]; }
-    S.p[0] <== PKx;
-    S.p[1] <== PKy;
-
-    // 5) Poseidon & Keystream
-    component pose = Poseidon(2);
-    pose.inputs[0] <== S.out[0];
-    pose.inputs[1] <== S.out[1];
-
-    log("Sx:", S.out[0]);
-    log("Sy:", S.out[1]);
-    log("Poseidon:", pose.out);
-
-    component ks = PoseidonToKeystream();
-    ks.in <== pose.out;
-
-    // 6) XOR with Burn Address
-    signal byteVal[20];
-    signal input outCiphertext[20];
-
+    // 2) Address bits (shared across all admins)
     component aBits[20];
-    component kBits[20];
-    signal xorBit[20][8];
-    signal acc[20][8];
-
     for (var i = 0; i < 20; i++) {
         aBits[i] = Num2Bits(8);
-        kBits[i] = Num2Bits(8);
-
-        aBits[i].in <== addressBytes[i]; // burn address
-        kBits[i].in <== ks.out[i]; // keystream
-
-        for (var b = 0; b < 8; b++) {
-            // Assign to the pre-declared signal array
-            xorBit[i][b] <== aBits[i].out[b] + kBits[i].out[b] - 2 * aBits[i].out[b] * kBits[i].out[b];
-            
-            if (b == 0) {
-                acc[i][b] <== xorBit[i][b];
-            } else {
-                // Linear combination: acc + (constant * signal) is allowed!
-                acc[i][b] <== acc[i][b-1] + xorBit[i][b] * (1 << b);
-            }
-        }
-        
-        byteVal[i] <== acc[i][7];
-        log("Byte ", i, " Ciphertext: ", byteVal[i]);
+        aBits[i].in <== addressBytes[i];
     }
-    
-    for (var i = 0; i < 20; i++) {
-        byteVal[i] === outCiphertext[i];
+
+    // 3) Per-admin: compute shared secret, keystream, XOR, and pack into output
+    component S[numAdmins];
+    component pose[numAdmins];
+    component ks[numAdmins];
+    component kBits[numAdmins][20];
+    signal xorBit[numAdmins][20][8];
+    signal acc[numAdmins][20][8];
+    signal byteVal[numAdmins][20];
+    signal packAcc[numAdmins][21];
+
+    for (var k = 0; k < numAdmins; k++) {
+        S[k] = EscalarMulAny(253);
+        for (var i = 0; i < 253; i++) { S[k].e[i] <== rBits.out[i]; }
+        S[k].p[0] <== ak.PKX[k];
+        S[k].p[1] <== ak.PKY[k];
+
+        pose[k] = Poseidon(2);
+        pose[k].inputs[0] <== S[k].out[0];
+        pose[k].inputs[1] <== S[k].out[1];
+
+        ks[k] = PoseidonToKeystream();
+        ks[k].in <== pose[k].out;
+
+        for (var i = 0; i < 20; i++) {
+            kBits[k][i] = Num2Bits(8);
+            kBits[k][i].in <== ks[k].out[i];
+
+            for (var b = 0; b < 8; b++) {
+                xorBit[k][i][b] <== aBits[i].out[b] + kBits[k][i].out[b] - 2 * aBits[i].out[b] * kBits[k][i].out[b];
+                if (b == 0) {
+                    acc[k][i][b] <== xorBit[k][i][b];
+                } else {
+                    acc[k][i][b] <== acc[k][i][b-1] + xorBit[k][i][b] * (1 << b);
+                }
+            }
+
+            byteVal[k][i] <== acc[k][i][7];
+        }
+
+        // Pack 20 bytes big-endian into a single field element
+        packAcc[k][0] <== 0;
+        for (var i = 0; i < 20; i++) {
+            packAcc[k][i+1] <== packAcc[k][i] * 256 + byteVal[k][i];
+        }
+        outCiphertext[k] <== packAcc[k][20];
     }
 
 }
