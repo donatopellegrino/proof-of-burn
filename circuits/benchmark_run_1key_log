@@ -1,0 +1,146 @@
+./benchmark.sh 
+
+up to date, audited 36 packages in 1s
+
+1 package is looking for funding
+  run `npm fund` for details
+
+3 high severity vulnerabilities
+
+To address all issues, run:
+  npm audit fix
+
+Run `npm audit` for details.
+** Resuming transfer from byte position 19327435928
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100   174  100   174    0     0    605      0 --:--:-- --:--:-- --:--:--   606
+template instances: 515
+non-linear constraints: 4170604
+linear constraints: 2263141
+public inputs: 0
+private inputs: 2870
+public outputs: 2
+wires: 6414299
+labels: 64365855
+Written successfully: ./test_paper.r1cs
+Written successfully: ./test_paper.sym
+Written successfully: ./test_paper_js/test_paper.wasm
+Everything went okay
+[INFO]  snarkJS: Reading r1cs
+[INFO]  snarkJS: Reading tauG1
+[INFO]  snarkJS: Reading tauG2
+[INFO]  snarkJS: Reading alphatauG1
+[INFO]  snarkJS: Reading betatauG1
+[INFO]  snarkJS: Circuit hash: 
+                4869b726 1fb40f2c 41bd8a33 db5ecff4
+                f58e73bc f0a53d8b b48b20f8 45ff7222
+                9a64d65b c22d90fc 98cda190 e86e04e0
+                64fd887e 6bebdd09 13dd0fc3 b46e5428
+[INFO]  snarkJS: EXPORT VERIFICATION KEY STARTED
+[INFO]  snarkJS: > Detected protocol: groth16
+[INFO]  snarkJS: EXPORT VERIFICATION KEY FINISHED
+--- groth16 prove: starting run 1 / 10 ---
+--- groth16 prove: run 1 done in 54875ms ---
+
+--- groth16 prove: starting run 2 / 10 ---
+--- groth16 prove: run 2 done in 54915ms ---
+
+--- groth16 prove: starting run 3 / 10 ---
+--- groth16 prove: run 3 done in 54968ms ---
+
+--- groth16 prove: starting run 4 / 10 ---
+--- groth16 prove: run 4 done in 54643ms ---
+
+--- groth16 prove: starting run 5 / 10 ---
+--- groth16 prove: run 5 done in 54542ms ---
+
+--- groth16 prove: starting run 6 / 10 ---
+--- groth16 prove: run 6 done in 55555ms ---
+
+--- groth16 prove: starting run 7 / 10 ---
+--- groth16 prove: run 7 done in 55216ms ---
+
+--- groth16 prove: starting run 8 / 10 ---
+--- groth16 prove: run 8 done in 54996ms ---
+
+--- groth16 prove: starting run 9 / 10 ---
+--- groth16 prove: run 9 done in 54902ms ---
+
+--- groth16 prove: starting run 10 / 10 ---
+--- groth16 prove: run 10 done in 55395ms ---
+
+>>> groth16 prove: 54875 54915 54968 54643 54542 55555 55216 54996 54902 55395  (avg 55000ms)
+
+--- groth16 verify: starting run 1 / 10 ---
+[INFO]  snarkJS: OK!
+--- groth16 verify: run 1 done in 421ms ---
+
+--- groth16 verify: starting run 2 / 10 ---
+[INFO]  snarkJS: OK!
+--- groth16 verify: run 2 done in 388ms ---
+
+--- groth16 verify: starting run 3 / 10 ---
+[INFO]  snarkJS: OK!
+--- groth16 verify: run 3 done in 405ms ---
+
+--- groth16 verify: starting run 4 / 10 ---
+[INFO]  snarkJS: OK!
+--- groth16 verify: run 4 done in 401ms ---
+
+--- groth16 verify: starting run 5 / 10 ---
+[INFO]  snarkJS: OK!
+--- groth16 verify: run 5 done in 391ms ---
+
+--- groth16 verify: starting run 6 / 10 ---
+[INFO]  snarkJS: OK!
+--- groth16 verify: run 6 done in 375ms ---
+
+--- groth16 verify: starting run 7 / 10 ---
+[INFO]  snarkJS: OK!
+--- groth16 verify: run 7 done in 406ms ---
+
+--- groth16 verify: starting run 8 / 10 ---
+[INFO]  snarkJS: OK!
+--- groth16 verify: run 8 done in 395ms ---
+
+--- groth16 verify: starting run 9 / 10 ---
+[INFO]  snarkJS: OK!
+--- groth16 verify: run 9 done in 405ms ---
+
+--- groth16 verify: starting run 10 / 10 ---
+[INFO]  snarkJS: OK!
+--- groth16 verify: run 10 done in 411ms ---
+
+>>> groth16 verify: 421 388 405 401 391 375 406 395 405 411  (avg 399ms)
+
+
+
+
+
+
+
+cast send 0x5FbDB2315678afecb367f032d93F642f64180aa3 "verifyProof(uint[2],uint[2][2],uint[2],uint[2])" '[0x0cb8ee3727bb3b2b0b53762eaa8096df1189b4d0f8d1a574
+ae6349ad538d52f8,0x286048fed06d706e42b02ba131e26254a96d97b1a77376118ef491ec11778a73]' '[[0x145790c4fadbfaeeecb91f10c8c025b1b34b4653468774810a456a2c375bd8d6,0
+x275053e3dbdfc8d913b80e36d00f34af1f5017e1e7d97acf5b04d81d0fbd6253],[0x024827622bbeeb1a7f5502546c49d0341c43c8eae91c904e4b84f9754acdb10c,0x18162332d1ebc135d1a3
+515ad2700a5e5c977f7c0a90959a0e53ee9964334cc7]]' '[0x0d621591d3b3d1425c35df243bc894d273be3b4e62200e490705a9a445d5c531,0x047ac2b00052365ae2011897022b6a9793b5f1
+f35085fd2566c1226102903bab]' '[0x00cc45c31f48396581dbab61f1af803ca67900dc60a2c589aac47c30a6f472d0,0x00000000000000000000000078d6fcb3d898112b94f38188e69cbf34b
+195044c]' --rpc-url http://127.0.0.1:8545 --private-key 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
+
+blockHash            0x4a61051c3d90a7d1096cba02e40c5d87b8350228885cec9de874f696a660f8f5
+blockNumber          2
+contractAddress      
+cumulativeGasUsed    33510
+effectiveGasPrice    878266826
+from                 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+gasUsed              33510
+logs                 []
+logsBloom            0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+root                 
+status               1 (success)
+transactionHash      0xc7e2984c89acac27fa0fc130f9c6db9b952f1ab607c721b1d81c5ca112ccaad2
+transactionIndex     0
+type                 2
+blobGasPrice         1
+blobGasUsed          
+to                   0x5FbDB2315678afecb367f032d93F642f64180aa3
